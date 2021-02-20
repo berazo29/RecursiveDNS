@@ -8,16 +8,16 @@ parser.add_argument('-f', type=str, help='File to read for root server', default
 parser.add_argument('port', type=int, help='This is the top server port to listen', action='store')
 # parser.add_argument('next_port', type=int, help='This is the root server port to listen', action='store')
 args = parser.parse_args(argv[1:])
+print(args)
 
 # load the text file as dictionary
-
 ip_addresses = {}
 with open(args.in_file) as f:
     for line in f:
         (key, ip, flag) = line.strip().split(' ')
         key = key.lower()
         ip_addresses[key] = sorted({ip, flag})
-print(ip_addresses)
+# print(ip_addresses)
 
 # Create a new socket
 try:

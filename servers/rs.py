@@ -8,16 +8,16 @@ parser.add_argument('-f', type=str, help='File to read for root server', default
 parser.add_argument('port', type=int, help='This is the root server port to listen', action='store')
 # parser.add_argument('next_port', type=int, help='This is the top server port to listen', action='store')
 args = parser.parse_args(argv[1:])
+print(args)
 
-# load the text file as dictionary
-
+# load the text file with the ip addresses as dictionary
 ip_addresses = {}
 with open(args.in_file) as f:
     for line in f:
         (key, ip, flag) = line.strip().split(' ')
         key = key.lower()
         ip_addresses[key] = sorted({ip, flag})
-print(ip_addresses)
+# print(ip_addresses)
 
 # Find next server ip address
 thostname = ''
@@ -26,7 +26,8 @@ for record in ip_addresses:
     if ip_addresses[record][1] == 'NS':
         thostname = record + ' ' + 'NS'
 
-print(thostname)
+# print(thostname)
+
 # Create a new socket
 try:
     ss = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -60,10 +61,13 @@ while True:
             data = data.decode('utf-8')
 
             try:
-                if ip_addresses[data]:
+                if ip_addresses[data] and ip_addresses[data][1] != 'NS':
                     print('[C]: {}'.format(data))
                     print('[S]: {}'.format(ip_addresses[data]))
                     csockid.sendall(str(ip_addresses[data][0]+' '+ip_addresses[data][1]).encode('utf-8'))
+                else:
+                    csockid.sendall(str(thostname).encode('utf-8'))
+
 
             except:
                 if not data:
@@ -74,4 +78,3 @@ while True:
                 csockid.sendall(str(res_localhost).encode('utf-8'))
 # ss.close()
 # exit()
-
