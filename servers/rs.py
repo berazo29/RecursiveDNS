@@ -15,6 +15,7 @@ ip_addresses = {}
 with open(args.in_file) as f:
     for line in f:
         (key, ip, flag) = line.strip().split(' ')
+        key = key.lower()
         ip_addresses[key] = sorted({ip, flag})
 print(ip_addresses)
 
