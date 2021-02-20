@@ -6,7 +6,7 @@ import socket
 parser = argparse.ArgumentParser(description="""Top Server""")
 parser.add_argument('-f', type=str, help='File to read for root server', default='PROJI-DNSTS.txt', action='store', dest='in_file')
 parser.add_argument('port', type=int, help='This is the top server port to listen', action='store')
-parser.add_argument('next_port', type=int, help='This is the root server port to listen', action='store')
+# parser.add_argument('next_port', type=int, help='This is the root server port to listen', action='store')
 args = parser.parse_args(argv[1:])
 
 # load the text file as dictionary
