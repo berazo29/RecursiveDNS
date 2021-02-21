@@ -2,6 +2,15 @@ import argparse
 from sys import argv
 import socket
 
+
+def list_to_text(lst):
+	if lst is None:
+		return None
+	str = ''
+	for each in lst:
+		str += each + ' '
+	return str.strip()
+
 #First we use the argparse package to parse the aruments
 parser = argparse.ArgumentParser(description="""This is a client program""")
 parser.add_argument('-f', type=str, help='This is the client file with the ip addresses', default='PROJI-HNS.txt',action='store', dest='in_file')
@@ -29,7 +38,8 @@ client_sock.connect(server_addr)
 with open(args.out_file, 'w') as write_file:
 	for line in open(args.in_file, 'r'):
 		#trim the line to avoid weird new line things
-		line = line.strip('\n')
+
+		line = line.lower().strip('\n')
 		print('[C]: {}'.format(line))
 		#now we write whatever the server tells us to the out_file
 		if line:
@@ -40,6 +50,7 @@ with open(args.out_file, 'w') as write_file:
 			# print("[RS]: {}".format(answer))
 			if answer[1] == 'A':
 				print("[RS]: {}".format(answer))
+				write_file.write(line + ' ' + list_to_text(answer) + '\n')
 
 			elif answer[1] == 'NS':
 
@@ -59,6 +70,11 @@ with open(args.out_file, 'w') as write_file:
 					root_response = next_client_sock.recv(512)
 					root_response = root_response.decode('utf-8').split(' ')
 					print("[TS]: {}".format(root_response))
+					if root_response[1] == 'A':
+
+						write_file.write(line + ' ' + list_to_text(root_response) + '\n')
+					else:
+						write_file.write(line + ' - ' + list_to_text(root_response) + '\n')
 				next_client_sock.close()
 				print("[C]: Client for second closed")
 
